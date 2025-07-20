@@ -1,19 +1,27 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { UserRole } from '@/lib/types'
-import { Heart, Users, Sparkles } from 'lucide-react'
+import { Heart, Users, Sparkles, ArrowLeft } from 'lucide-react'
 import { updateUserRole } from '@/app/actions/user'
 
 export default function OnboardingPage() {
+  const { user, isLoaded } = useUser()
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isChangingRole, setIsChangingRole] = useState(false)
   const router = useRouter()
-  const { user } = useUser()
+
+  useEffect(() => {
+    if (isLoaded && user?.publicMetadata?.role) {
+      setIsChangingRole(true)
+      setSelectedRole(user.publicMetadata.role as UserRole)
+    }
+  }, [isLoaded, user])
 
   const handleRoleSelection = async (role: UserRole) => {
     setSelectedRole(role)
@@ -25,9 +33,12 @@ export default function OnboardingPage() {
     setIsLoading(true)
     try {
       await updateUserRole(selectedRole)
+      // Force a refresh to update the user data
+      router.refresh()
       router.push('/dashboard')
     } catch (error) {
       console.error('Error updating user role:', error)
+      alert('Failed to update role. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -36,13 +47,25 @@ export default function OnboardingPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full">
+        {isChangingRole && (
+          <Button
+            variant="ghost"
+            onClick={() => router.push('/dashboard')}
+            className="mb-4 flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Dashboard
+          </Button>
+        )}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-slate-900 mb-2">
-            Welcome to Bridge!
+            {isChangingRole ? 'Change Your Role' : 'Welcome to Bridge!'}
           </h1>
           <p className="text-lg text-slate-600">
-            Whether you're looking for grandparent-style chats or have stories to share,
-            we'll match you with the right people.
+            {isChangingRole 
+              ? 'Select a new role to change how you participate in the community.'
+              : "Whether you're looking for grandparent-style chats or have stories to share, we'll match you with the right people."
+            }
           </p>
         </div>
 
@@ -97,10 +120,20 @@ export default function OnboardingPage() {
           <Button 
             size="lg" 
             onClick={handleContinue}
-            disabled={!selectedRole || isLoading}
+            disabled={!selectedRole || isLoading || (isChangingRole && selectedRole === user?.publicMetadata?.role)}
           >
-            {isLoading ? 'Setting up...' : 'Continue to Dashboard'}
+            {isLoading 
+              ? 'Updating...' 
+              : isChangingRole 
+                ? 'Update Role' 
+                : 'Continue to Dashboard'
+            }
           </Button>
+          {isChangingRole && selectedRole === user?.publicMetadata?.role && (
+            <p className="text-sm text-slate-500 mt-2">
+              This is your current role. Select a different role to change it.
+            </p>
+          )}
         </div>
       </div>
     </main>

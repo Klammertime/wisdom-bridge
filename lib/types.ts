@@ -6,6 +6,16 @@ export interface UserProfile {
   name?: string
   role?: UserRole
   imageUrl?: string
+  headline?: string
+  location?: string
+  expertise?: string[]
+  interests?: string[]
+  bio?: string
+  favoriteStory?: string
+  languages?: string[]
+  yearsOfExperience?: number
+  availability?: string
+  lookingFor?: string
 }
 
 export interface Connection {

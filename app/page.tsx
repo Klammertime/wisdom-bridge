@@ -27,44 +27,50 @@ export default function HomePage() {
           <div className="max-w-5xl mx-auto">
             {/* Feature Cards */}
             <div className="grid md:grid-cols-3 gap-8 mb-16">
-              <Card className="group hover:shadow-lg transition-all duration-300 border-slate-200">
-                <CardHeader>
-                  <div className="w-14 h-14 bg-rose-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-rose-200 transition-colors">
-                    <Heart className="w-7 h-7 text-rose-600" />
-                  </div>
-                  <CardTitle className="text-xl">Share Your Story</CardTitle>
-                  <CardDescription className="text-base mt-2">
-                    Whether you're 25 or 85, your experiences matter. Share your stories
-                    with someone who genuinely wants to listen and learn.
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              <Link href="/features/share-your-story" className="block">
+                <Card className="group hover:shadow-lg transition-all duration-300 border-slate-200 cursor-pointer h-full">
+                  <CardHeader>
+                    <div className="w-14 h-14 bg-rose-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-rose-200 transition-colors">
+                      <Heart className="w-7 h-7 text-rose-600" />
+                    </div>
+                    <CardTitle className="text-xl">Share Your Story</CardTitle>
+                    <CardDescription className="text-base mt-2">
+                      Whether you're 25 or 85, your experiences matter. Share your stories
+                      with someone who genuinely wants to listen and learn.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 border-slate-200">
-                <CardHeader>
-                  <div className="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
-                    <Users className="w-7 h-7 text-blue-600" />
-                  </div>
-                  <CardTitle className="text-xl">Find Connection</CardTitle>
-                  <CardDescription className="text-base mt-2">
-                    Missing those grandparent-style conversations? Connect with someone
-                    who has time to share and stories to tell.
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              <Link href="/features/find-connection" className="block">
+                <Card className="group hover:shadow-lg transition-all duration-300 border-slate-200 cursor-pointer h-full">
+                  <CardHeader>
+                    <div className="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
+                      <Users className="w-7 h-7 text-blue-600" />
+                    </div>
+                    <CardTitle className="text-xl">Find Connection</CardTitle>
+                    <CardDescription className="text-base mt-2">
+                      Missing those grandparent-style conversations? Connect with someone
+                      who has time to share and stories to tell.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 border-slate-200">
-                <CardHeader>
-                  <div className="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
-                    <Video className="w-7 h-7 text-green-600" />
-                  </div>
-                  <CardTitle className="text-xl">Real People</CardTitle>
-                  <CardDescription className="text-base mt-2">
-                    Video calls with real people who want to connect. No age limits,
-                    no requirements - just genuine human conversation.
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              <Link href="/features/real-people" className="block">
+                <Card className="group hover:shadow-lg transition-all duration-300 border-slate-200 cursor-pointer h-full">
+                  <CardHeader>
+                    <div className="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
+                      <Video className="w-7 h-7 text-green-600" />
+                    </div>
+                    <CardTitle className="text-xl">Real People</CardTitle>
+                    <CardDescription className="text-base mt-2">
+                      Video calls with real people who want to connect. No age limits,
+                      no requirements - just genuine human conversation.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
             </div>
 
             {/* CTA Buttons */}

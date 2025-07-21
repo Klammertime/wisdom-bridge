@@ -8,11 +8,12 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { UserRole, Connection } from '@/lib/types'
 import { 
-  Users, Heart, Sparkles, Clock, Calendar, 
-  MessageCircle, Settings, BookOpen, TrendingUp,
+  Users, Heart, Sparkles, Settings, BookOpen, TrendingUp,
   ChevronRight, Zap, Target
 } from 'lucide-react'
 import Link from 'next/link'
+import { RecentConnections } from '@/components/recent-connections'
+import { mockConnections } from '@/lib/mock-data'
 
 export default function DashboardPage() {
   const { user, isLoaded } = useUser()
@@ -29,10 +30,8 @@ export default function DashboardPage() {
       router.push('/onboarding')
     }
 
-    const savedConnections = localStorage.getItem('connections')
-    if (savedConnections) {
-      setConnections(JSON.parse(savedConnections))
-    }
+    // Use mock data for now, in production this would come from your database
+    setConnections(mockConnections)
 
     // Set time-based greeting
     const hour = new Date().getHours()
@@ -164,7 +163,7 @@ export default function DashboardPage() {
               <CardContent>
                 <div className={`inline-flex items-center gap-2 ${roleBgColor} px-3 py-2 rounded-lg mb-3`}>
                   <RoleIcon className={`w-4 h-4 ${roleColor}`} />
-                  <span className="font-medium text-sm capitalize">{userRole}</span>
+                  <span className="font-medium text-sm">{roleLabel}</span>
                 </div>
                 <Link href="/onboarding">
                   <Button variant="outline" size="sm" className="w-full">
@@ -176,86 +175,43 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Connections */}
-          <Card className="border-slate-200">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-xl">Recent Connections</CardTitle>
-                <CardDescription>
-                  People you've connected with
-                </CardDescription>
-              </div>
-              {connections.length > 0 && (
-                <Link href="/connections">
-                  <Button variant="ghost" size="sm">
-                    View All
-                    <ChevronRight className="ml-1 h-4 w-4" />
-                  </Button>
-                </Link>
-              )}
-            </CardHeader>
-            <CardContent>
-              {connections.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="w-10 h-10 text-slate-400" />
-                  </div>
-                  <p className="text-slate-500 mb-4">No connections yet</p>
-                  <p className="text-sm text-slate-400 mb-6">
-                    Start your first conversation to build your network
-                  </p>
-                  <Link href="/match">
-                    <Button>Find Your First Match</Button>
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {connections.slice(0, 5).map((connection) => (
-                    <div key={connection.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
-                      <div className="flex items-center gap-4">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={connection.connectedUserImageUrl} />
-                          <AvatarFallback>{connection.connectedUserName?.[0] || 'U'}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium text-slate-900">{connection.connectedUserName}</p>
-                          <div className="flex items-center gap-3 text-sm text-slate-500">
-                            <span className="flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
-                              {new Date(connection.connectedAt).toLocaleDateString()}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {new Date(connection.connectedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="sm">
-                        <MessageCircle className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <RecentConnections connections={connections} />
 
-          {/* Quick Tips */}
-          <div className="mt-8 bg-blue-50 rounded-lg p-6">
-            <div className="flex items-start gap-3">
-              <BookOpen className="w-5 h-5 text-blue-600 mt-0.5" />
-              <div>
-                <h3 className="font-semibold text-slate-900 mb-1">Tip of the day</h3>
-                <p className="text-sm text-slate-700">
-                  {userRole === 'giver' 
-                    ? "Share specific examples from your experience. People connect better with stories than advice."
-                    : userRole === 'receiver'
-                    ? "Come prepared with specific questions. The more focused you are, the better guidance you'll receive."
-                    : "Switch between mentoring and learning to get the full experience."
-                  }
-                </p>
+          {/* Quick Tips & Success Stories */}
+          <div className="grid md:grid-cols-2 gap-6 mt-8">
+            <div className="bg-blue-50 rounded-lg p-6">
+              <div className="flex items-start gap-3">
+                <BookOpen className="w-5 h-5 text-blue-600 mt-0.5" />
+                <div>
+                  <h3 className="font-semibold text-slate-900 mb-1">Tip of the day</h3>
+                  <p className="text-sm text-slate-700">
+                    {userRole === 'giver' 
+                      ? "Share specific examples from your experience. People connect better with stories than advice."
+                      : userRole === 'receiver'
+                      ? "Come prepared with specific questions. The more focused you are, the better guidance you'll receive."
+                      : "Switch between mentoring and learning to get the full experience."
+                    }
+                  </p>
+                </div>
               </div>
             </div>
+            
+            <Link href="/stories" className="block">
+              <div className="bg-purple-50 rounded-lg p-6 h-full hover:bg-purple-100 transition-colors cursor-pointer">
+                <div className="flex items-start gap-3">
+                  <Heart className="w-5 h-5 text-purple-600 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold text-slate-900 mb-1">Success Stories</h3>
+                    <p className="text-sm text-slate-700">
+                      Read inspiring stories from our community and see the impact of meaningful connections.
+                    </p>
+                    <span className="text-sm text-purple-600 font-medium mt-2 inline-flex items-center">
+                      Read Stories <ChevronRight className="w-4 h-4 ml-1" />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>

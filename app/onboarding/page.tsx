@@ -33,13 +33,13 @@ export default function OnboardingPage() {
     setIsLoading(true)
     try {
       await updateUserRole(selectedRole)
-      // Force a refresh to update the user data
-      router.refresh()
-      router.push('/dashboard')
+      
+      // Force a hard refresh by reloading the page
+      // This ensures Clerk's user data is fully updated
+      window.location.href = '/dashboard'
     } catch (error) {
       console.error('Error updating user role:', error)
       alert('Failed to update role. Please try again.')
-    } finally {
       setIsLoading(false)
     }
   }

@@ -7,13 +7,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { UserRole, UserProfile } from '@/lib/types'
-import { findMatch } from '@/lib/api'
 import { 
   Loader2, ArrowLeft, Video, RefreshCw, 
   Heart, Users, Sparkles, CheckCircle2,
-  MessageSquare, Clock, Target
+  MessageSquare, Clock, Target, MapPin,
+  Globe, Award, BookOpen, Calendar
 } from 'lucide-react'
 import Link from 'next/link'
+import { mockUserProfiles, conversationStarters } from '@/lib/mock-data'
 
 export default function MatchPage() {
   const { user, isLoaded } = useUser()
@@ -48,17 +49,22 @@ export default function MatchPage() {
     setMatchingStage(0)
 
     try {
-      const userRole = user.publicMetadata.role as UserRole
-      const preferredRole = userRole === 'giver' ? 'receiver' : userRole === 'receiver' ? 'giver' : 'both'
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 4500))
       
-      const matchedUser = await findMatch({
-        userId: user.id,
-        role: userRole,
-        preferredRole: preferredRole,
+      const userRole = user.publicMetadata.role as UserRole
+      
+      // Filter compatible profiles based on user role
+      const compatibleProfiles = mockUserProfiles.filter(profile => {
+        if (userRole === 'receiver') return profile.role === 'giver' || profile.role === 'both'
+        if (userRole === 'giver') return profile.role === 'receiver' || profile.role === 'both'
+        return true // 'both' can match with anyone
       })
       
-      if (matchedUser) {
-        setMatch(matchedUser)
+      if (compatibleProfiles.length > 0) {
+        // Select a random compatible profile
+        const randomIndex = Math.floor(Math.random() * compatibleProfiles.length)
+        setMatch(compatibleProfiles[randomIndex])
       } else {
         setError('No matches available right now. Please try again later.')
       }
@@ -163,13 +169,13 @@ export default function MatchPage() {
                 <div className="text-center">
                   <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-medium mb-6">
                     <CheckCircle2 className="w-4 h-4" />
-                    Match found!
+                    Perfect match found!
                   </div>
                   
                   <Avatar className="w-28 h-28 mx-auto mb-4 ring-4 ring-slate-100">
                     <AvatarImage src={match.imageUrl} />
                     <AvatarFallback className="text-2xl bg-gradient-to-br from-blue-500 to-purple-500 text-white">
-                      {match.name?.[0] || match.email[0].toUpperCase()}
+                      {match.name?.split(' ').map(n => n[0]).join('') || match.email[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   
@@ -177,25 +183,72 @@ export default function MatchPage() {
                     {match.name || 'Your Match'}
                   </h3>
                   
-                  <div className="flex items-center justify-center gap-2 mb-4">
-                    {match.role === 'giver' && <Heart className="w-4 h-4 text-rose-500" />}
-                    {match.role === 'receiver' && <Users className="w-4 h-4 text-blue-500" />}
-                    {match.role === 'both' && <Sparkles className="w-4 h-4 text-purple-500" />}
-                    <p className="text-slate-600 font-medium">
-                      {match.role === 'giver' ? 'Mentor' : match.role === 'receiver' ? 'Learner' : 'Both'}
-                    </p>
+                  {match.headline && (
+                    <p className="text-sm text-slate-600 mb-3 px-4">{match.headline}</p>
+                  )}
+                  
+                  <div className="flex items-center justify-center gap-4 text-sm text-slate-500 mb-4">
+                    {match.location && (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-4 h-4" />
+                        {match.location}
+                      </span>
+                    )}
+                    {match.languages && (
+                      <span className="flex items-center gap-1">
+                        <Globe className="w-4 h-4" />
+                        {match.languages[0]}
+                      </span>
+                    )}
                   </div>
+                </div>
 
-                  <div className="flex items-center justify-center gap-4 text-sm text-slate-500">
-                    <span className="flex items-center gap-1">
-                      <MessageSquare className="w-4 h-4" />
-                      Ready to chat
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      Available now
-                    </span>
+                {/* Why You Matched */}
+                <div className="bg-purple-50 rounded-lg p-4 text-left">
+                  <h4 className="font-semibold text-purple-900 mb-2 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4" />
+                    Why You Matched
+                  </h4>
+                  <ul className="space-y-1 text-sm text-purple-800">
+                    <li>• Compatible conversation styles</li>
+                    {match.interests && match.interests.length > 0 && (
+                      <li>• Shared interest in {match.interests[0]}</li>
+                    )}
+                    <li>• {match.availability || 'Flexible availability'}</li>
+                  </ul>
+                </div>
+
+                {/* Expertise Preview */}
+                {match.expertise && match.expertise.length > 0 && (
+                  <div className="text-left">
+                    <h4 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                      <Award className="w-4 h-4 text-amber-500" />
+                      Can share expertise in:
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {match.expertise.slice(0, 3).map((item, index) => (
+                        <span key={index} className="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs">
+                          {item}
+                        </span>
+                      ))}
+                      {match.expertise.length > 3 && (
+                        <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+                          +{match.expertise.length - 3} more
+                        </span>
+                      )}
+                    </div>
                   </div>
+                )}
+
+                {/* Conversation Starter */}
+                <div className="bg-slate-50 rounded-lg p-4 text-left">
+                  <h4 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4" />
+                    Conversation Starter
+                  </h4>
+                  <p className="text-sm text-slate-600 italic">
+                    "{conversationStarters[Math.floor(Math.random() * conversationStarters.length)]}"
+                  </p>
                 </div>
 
                 <div className="space-y-3">

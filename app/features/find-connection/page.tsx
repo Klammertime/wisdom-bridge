@@ -119,22 +119,34 @@ export default function FindConnectionPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm sticky top-0 z-50">
+      <header className="w-full border-b border-gray-200 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <button
-              onClick={() => router.push('/')}
-              className="flex items-center text-gray-600 hover:text-gray-900"
-            >
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Back to Home
-            </button>
-            <Button onClick={() => router.push('/sign-up')}>
-              Get Started
-            </Button>
+          <div className="flex items-center justify-between h-16">
+            {/* Left Section */}
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+                <ArrowLeft className="h-5 w-5 mr-1" />
+                <span className="hidden sm:inline">Back to Home</span>
+              </Link>
+            </div>
+            
+            {/* Center Section - Logo */}
+            <div className="hidden md:block">
+              <h1 className="text-lg font-semibold text-purple-600">Bridge</h1>
+            </div>
+            
+            {/* Right Section */}
+            <div className="flex items-center space-x-4">
+              <Link href="/sign-in" className="text-gray-600 hover:text-gray-900 transition-colors">
+                Sign in
+              </Link>
+              <Link href="/sign-up" className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                Sign Up
+              </Link>
+            </div>
           </div>
         </div>
-      </nav>
+      </header>
 
       {/* Hero Section */}
       <section className="py-20 px-4">
@@ -148,10 +160,15 @@ export default function FindConnectionPage() {
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Missing those grandparent-style conversations? Connect with someone who has time to share and stories to tell.
           </p>
-          <Button size="lg" onClick={() => router.push('/sign-up')}>
-            Find Your Connection
-            <ChevronRight className="ml-2 h-5 w-5" />
-          </Button>
+          <div className="flex gap-4 justify-center">
+            <Button size="lg" onClick={() => router.push('/sign-up')} className="bg-purple-600 hover:bg-purple-700">
+              Find Your Connection
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => router.push('/features/share-your-story')}>
+              Share Stories Instead
+            </Button>
+          </div>
         </div>
       </section>
 

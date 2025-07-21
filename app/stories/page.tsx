@@ -202,7 +202,7 @@ export default function SuccessStoriesPage() {
                 size="lg" 
                 variant="outline"
                 onClick={() => router.push('/match')}
-                className="border-white text-white hover:bg-white/10"
+                className="border-white text-white hover:bg-white hover:text-purple-600 bg-white/10"
               >
                 Find a Match
               </Button>

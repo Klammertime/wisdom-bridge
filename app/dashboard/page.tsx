@@ -91,7 +91,7 @@ export default function DashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full group/btn">
+                <Button className="w-full group/btn bg-purple-600 hover:bg-purple-700 text-white">
                   Find Someone
                   <ChevronRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                 </Button>

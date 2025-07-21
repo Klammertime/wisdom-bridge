@@ -5,10 +5,9 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { UserRole, Connection } from '@/lib/types'
 import { 
-  Users, Heart, Sparkles, Settings, BookOpen, TrendingUp,
+  Users, Heart, Sparkles, BookOpen, TrendingUp,
   ChevronRight, Zap, Target
 } from 'lucide-react'
 import Link from 'next/link'
@@ -69,40 +68,13 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
           <div className="mb-8">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900 mb-2">
-                  {greeting}, {user.firstName || 'Friend'}!
-                </h1>
-                <p className="text-lg text-slate-600">
-                  Ready for meaningful conversations
-                </p>
-              </div>
-              <div className="flex items-center gap-4">
-                <Link href="/profile">
-                  <Button variant="outline" size="sm">
-                    View Profile
-                  </Button>
-                </Link>
-                <Link href="/settings">
-                  <Button variant="outline" size="icon">
-                    <Settings className="h-4 w-4" />
-                  </Button>
-                </Link>
-                <div className="flex items-center gap-3 bg-white rounded-lg p-3 shadow-sm">
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage src={user.imageUrl} />
-                    <AvatarFallback>{user.firstName?.[0] || 'U'}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-medium text-sm text-slate-900">{user.fullName}</p>
-                    <div className={`flex items-center gap-1 ${roleColor}`}>
-                      <RoleIcon className="w-3 h-3" />
-                      <span className="text-xs font-medium">{roleLabel}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900 mb-2">
+                {greeting}, {user.firstName || 'Friend'}!
+              </h1>
+              <p className="text-lg text-slate-600">
+                Ready for meaningful conversations
+              </p>
             </div>
           </div>
 

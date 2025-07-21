@@ -9,6 +9,7 @@ import {
 } from '@clerk/nextjs'
 import { Geist, Geist_Mono } from 'next/font/google'
 import '@/styles/globals.css'
+import { Navigation } from '@/components/navigation'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -34,28 +35,31 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <header className="flex justify-between items-center p-4 h-16">
-            <SignedIn>
-              <nav className="flex items-center gap-4">
-                <a href="/dashboard" className="text-slate-600 hover:text-slate-900 transition-colors">Dashboard</a>
-                <a href="/profile" className="text-slate-600 hover:text-slate-900 transition-colors">Profile</a>
-              </nav>
-            </SignedIn>
-            <div className="flex items-center gap-4">
-              <SignedOut>
+          <SignedIn>
+            <Navigation />
+          </SignedIn>
+          <SignedOut>
+            <header className="flex justify-between items-center p-4 h-16">
+              <div className="flex items-center gap-4">
                 <SignInButton />
                 <SignUpButton>
                   <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
                     Sign Up
                   </button>
                 </SignUpButton>
-              </SignedOut>
-              <SignedIn>
-                <UserButton />
-              </SignedIn>
-            </div>
-          </header>
-          {children}
+              </div>
+            </header>
+          </SignedOut>
+          <div>
+            <SignedIn>
+              <main className="pt-16">
+                {children}
+              </main>
+            </SignedIn>
+            <SignedOut>
+              {children}
+            </SignedOut>
+          </div>
         </body>
       </html>
     </ClerkProvider>

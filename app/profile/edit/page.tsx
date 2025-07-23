@@ -42,12 +42,19 @@ export default function EditProfilePage() {
     e.preventDefault()
     setIsLoading(true)
     
-    // In a real app, this would save to your database
-    localStorage.setItem('userProfile', JSON.stringify(formData))
-    
-    setTimeout(() => {
-      router.push('/profile')
-    }, 1000)
+    try {
+      // In a real app, this would save to your database
+      localStorage.setItem('userProfile', JSON.stringify(formData))
+      
+      setTimeout(() => {
+        router.push('/profile')
+      }, 1000)
+    } catch (error) {
+      console.error('Failed to save profile:', error)
+      setIsLoading(false)
+      // Show user-friendly error message
+      alert('Failed to save profile. Please try again.')
+    }
   }
 
   const handleChange = (field: string, value: string) => {

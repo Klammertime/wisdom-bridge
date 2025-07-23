@@ -61,9 +61,23 @@ function CallContent() {
       connectedAt: new Date(),
     }
 
-    const existingConnections = JSON.parse(localStorage.getItem('connections') || '[]')
-    const updatedConnections = [...existingConnections, newConnection]
-    localStorage.setItem('connections', JSON.stringify(updatedConnections))
+    try {
+      const existingConnectionsData = localStorage.getItem('connections')
+      const existingConnections = existingConnectionsData ? JSON.parse(existingConnectionsData) : []
+      
+      // Check if connection already exists to prevent duplicates
+      const connectionExists = existingConnections.some(
+        (conn: Connection) => conn.connectedUserId === matchId && conn.userId === user.id
+      )
+      
+      if (!connectionExists) {
+        const updatedConnections = [...existingConnections, newConnection]
+        localStorage.setItem('connections', JSON.stringify(updatedConnections))
+      }
+    } catch (error) {
+      console.error('Failed to save connection:', error)
+      // Fallback: continue without saving to localStorage
+    }
 
     router.push('/dashboard')
   }

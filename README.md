@@ -2,6 +2,10 @@
 
 A Next.js 15 application that connects people for meaningful video conversations to share life wisdom and advice.
 
+## 🌟 Live Demo
+
+**[Try Bridge Now →](https://wisdom-bridge.vercel.app/)**
+
 ## Features
 
 - **User Authentication**: Secure sign-in/sign-up with Clerk (email, Google, etc.)
@@ -21,7 +25,7 @@ A Next.js 15 application that connects people for meaningful video conversations
 
 ## Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 - Clerk account (for authentication)
 - Daily.co account (for video calls)
@@ -29,22 +33,26 @@ A Next.js 15 application that connects people for meaningful video conversations
 ## Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd wisdom-bridge
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Set up environment variables:
+
 ```bash
 cp .env.local.example .env.local
 ```
 
 4. Update `.env.local` with your credentials:
+
 ```env
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 CLERK_SECRET_KEY=your_clerk_secret_key
@@ -84,9 +92,9 @@ wisdom-bridge/
 │   ├── dashboard/         # User dashboard
 │   ├── match/             # Matching page
 │   └── call/              # Video call page
-├── components/            
+├── components/
 │   └── ui/                # ShadCN UI components
-├── lib/                   
+├── lib/
 │   ├── api.ts             # API functions
 │   ├── types.ts           # TypeScript types
 │   └── utils.ts           # Utility functions
@@ -109,15 +117,50 @@ wisdom-bridge/
 - Video rooms are created with Daily.co (requires valid API key)
 - Saved connections are stored in localStorage (ready for database integration)
 
-## Future Enhancements
+## 💡 The Problem
 
-- Database integration (Supabase ready)
-- Advanced matching algorithms
-- User profiles and preferences
-- Chat messaging
-- Session recordings
-- Rating system
+Every day, valuable life stories and wisdom from older generations go unheard and unpreserved. Meanwhile, younger people miss out on the guidance and perspective that comes from lived experience. Traditional video chat apps focus on surface-level conversations, not meaningful story-sharing.
+
+## ✨ The Solution
+
+Bridge creates purposeful intergenerational connections through:
+
+- **Smart Matching**: Algorithm connects compatible conversation partners based on interests and availability
+- **Story Preservation**: Conversations can be recorded and transformed into lasting memoirs
+- **Guided Conversations**: Prompts and topics help overcome awkward silences
+- **Safe Environment**: Verified profiles and moderated connections ensure trust
+
+## 🚀 Key Features
+
+### For Older Adults
+
+- 🎙️ Share life stories with eager listeners
+- 📚 Transform conversations into digital or printed memoirs
+- 🤝 Connect with young people who value wisdom
+- 💬 Easy-to-use interface designed for all tech levels
+
+### For Younger Users
+
+- 🌍 Learn from lived experiences across generations
+- 📖 Discover family-style wisdom and guidance
+- 🎓 Gain mentorship in various life areas
+- ❤️ Build meaningful connections
+
+### Coming Soon
+
+- 🤖 AI-powered conversation assistance for accessibility
+- 📝 Automated memoir creation from recorded stories
+- 🔒 Enhanced verification and safety features
+- 📱 Native mobile apps
 
 ## License
 
-[Your License Here]
+This project is licensed under the MIT License
+
+<p align="center">
+  <i>Every story deserves a listener. Every listener deserves a story.</i>
+</p>
+<p align="center">
+  Made with ❤️ by a developer who misses their grandparents
+</p>
+```

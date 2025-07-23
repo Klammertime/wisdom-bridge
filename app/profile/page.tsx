@@ -24,10 +24,17 @@ export default function ProfilePage() {
   }, [user, isLoaded, router])
 
   useEffect(() => {
-    // Load profile from localStorage
-    const savedProfile = localStorage.getItem('userProfile')
-    if (savedProfile) {
-      setProfile(JSON.parse(savedProfile))
+    // Load profile from localStorage with error handling
+    try {
+      const savedProfile = localStorage.getItem('userProfile')
+      if (savedProfile) {
+        const parsedProfile = JSON.parse(savedProfile)
+        setProfile(parsedProfile)
+      }
+    } catch (error) {
+      console.error('Failed to load profile from localStorage:', error)
+      // Remove corrupted data
+      localStorage.removeItem('userProfile')
     }
   }, [])
 

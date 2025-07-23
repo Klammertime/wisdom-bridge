@@ -11,8 +11,11 @@ export async function POST() {
     )
   }
 
-  console.log('Daily API Key exists:', !!apiKey)
-  console.log('Daily Domain:', dailyDomain)
+  // Remove console logs for security in production
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Daily API Key exists:', !!apiKey)
+    console.log('Daily Domain:', dailyDomain)
+  }
 
   try {
     const response = await fetch('https://api.daily.co/v1/rooms', {
@@ -44,15 +47,21 @@ export async function POST() {
     }
 
     const room = await response.json()
-    console.log('Room created successfully:', room)
-    console.log('Room URL from API:', room.url)
-    console.log('Room name:', room.name)
+    
+    // Only log detailed information in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Room created successfully:', room)
+      console.log('Room URL from API:', room.url)
+      console.log('Room name:', room.name)
+    }
     
     // Daily.co API already returns the full URL with the correct domain
     // Don't override it unless necessary
     const roomUrl = room.url
     
-    console.log('Returning room URL:', roomUrl)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Returning room URL:', roomUrl)
+    }
     
     return NextResponse.json({
       roomUrl: roomUrl,

@@ -2,7 +2,7 @@
 
 A Next.js 15 application that connects people for meaningful video conversations to share life wisdom and advice.
 
-## 🌟 Live Demo
+## Live Demo
 
 **[Try Bridge Now →](https://wisdom-bridge.vercel.app/)**
 
@@ -157,10 +157,11 @@ Bridge creates purposeful intergenerational connections through:
 
 This project is licensed under the MIT License
 
+##
+
 <p align="center">
   <i>Every story deserves a listener. Every listener deserves a story.</i>
 </p>
 <p align="center">
   Made with ❤️ by a developer who misses their grandparents
 </p>
-```

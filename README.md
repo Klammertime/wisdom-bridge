@@ -4,7 +4,7 @@ A Next.js 15 application that connects people for meaningful video conversations
 
 ## Live Demo
 
-**[Try Bridge Now →](https://wisdom-bridge.vercel.app/)**
+**[Try Bridge Now →](https://wisdom-bridge-2025.vercel.app/)**
 
 ## Features
 

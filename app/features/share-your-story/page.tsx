@@ -1,19 +1,18 @@
 'use client'
 
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { 
-  ArrowLeft, BookOpen, Heart, Mic, Users, 
-  MessageSquare, Clock, Shield, Sparkles,
-  ChevronRight, Quote
-} from 'lucide-react'
+  FeatureHero, 
+  FeatureGrid, 
+  StepsSection,
+  FAQSection, 
+  TestimonialSection,
+  CTASection 
+} from '@/components/features'
+import { Heart, Users, Clock } from 'lucide-react'
+import { FeatureBenefit, FeatureStep, FeatureFAQ, FeatureTestimonial } from '@/lib/types'
 
 export default function ShareYourStoryPage() {
-  const router = useRouter()
-
-  const benefits = [
+  const benefits: FeatureBenefit[] = [
     {
       icon: Heart,
       title: "Be Heard",
@@ -31,7 +30,7 @@ export default function ShareYourStoryPage() {
     }
   ]
 
-  const howItWorks = [
+  const howItWorks: FeatureStep[] = [
     {
       step: 1,
       title: "Sign Up",
@@ -49,7 +48,7 @@ export default function ShareYourStoryPage() {
     }
   ]
 
-  const faqs = [
+  const faqs: FeatureFAQ[] = [
     {
       question: "Who can share their stories?",
       answer: "Everyone! Whether you're 25 or 95, your experiences are valuable. We believe every life has stories worth sharing."
@@ -72,7 +71,7 @@ export default function ShareYourStoryPage() {
     }
   ]
 
-  const testimonials = [
+  const testimonials: FeatureTestimonial[] = [
     {
       name: "Martha W.",
       age: 78,
@@ -95,160 +94,29 @@ export default function ShareYourStoryPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
-      {/* Navigation */}
-      <header className="w-full border-b border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Left Section */}
-            <div className="flex items-center">
-              <Link href="/" className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
-                <ArrowLeft className="h-5 w-5 mr-1" />
-                <span className="hidden sm:inline">Back to Home</span>
-              </Link>
-            </div>
-            
-            {/* Center Section - Logo */}
-            <div className="hidden md:block">
-              <h1 className="text-lg font-semibold text-purple-600">Bridge</h1>
-            </div>
-            
-            {/* Right Section */}
-            <div className="flex items-center space-x-4">
-              <Link href="/sign-in" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Sign in
-              </Link>
-              <Link href="/sign-up" className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
-                Sign Up
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <FeatureHero
+        title="Your Stories Matter"
+        subtitle="Share your life experiences with people who want to learn from you"
+        description="Connect with younger generations eager to hear your wisdom, adventures, and life lessons."
+        ctaText="Start Sharing Today"
+        ctaLink="/sign-up"
+      />
 
-      {/* Hero Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-6">
-            <BookOpen className="h-8 w-8 text-purple-600" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Share Your Story
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Whether you're 25 or 85, your experiences matter. Share your stories with someone who genuinely wants to listen and learn.
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Button size="lg" onClick={() => router.push('/sign-up')} className="bg-purple-600 hover:bg-purple-700">
-              Start Sharing Today
-              <ChevronRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button size="lg" variant="outline" onClick={() => router.push('/features/find-connection')}>
-              Learn More
-            </Button>
-          </div>
-        </div>
-      </section>
+      <FeatureGrid
+        title="Why Share Your Story?"
+        items={benefits}
+      />
 
-      {/* Benefits Section */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Why Share Your Story?</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {benefits.map((benefit, index) => (
-              <Card key={index} className="border-0 shadow-lg">
-                <CardHeader>
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                    <benefit.icon className="h-6 w-6 text-purple-600" />
-                  </div>
-                  <CardTitle className="text-xl">{benefit.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">{benefit.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      <StepsSection steps={howItWorks} />
 
-      {/* How It Works */}
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-          <div className="space-y-8">
-            {howItWorks.map((step, index) => (
-              <div key={index} className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
-                  {step.step}
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-                  <p className="text-gray-600">{step.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FAQSection faqs={faqs} />
 
-      {/* Testimonials */}
-      <section className="py-16 px-4 bg-purple-50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Stories Being Shared</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="bg-white">
-                <CardContent className="pt-6">
-                  <Quote className="h-8 w-8 text-purple-300 mb-4" />
-                  <p className="text-gray-700 mb-4 italic">"{testimonial.quote}"</p>
-                  <div className="border-t pt-4">
-                    <p className="font-semibold">{testimonial.name}, {testimonial.age}</p>
-                    <p className="text-sm text-gray-600">{testimonial.role}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialSection testimonials={testimonials} />
 
-      {/* FAQs */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
-          <div className="space-y-6">
-            {faqs.map((faq, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <CardTitle className="text-lg">{faq.question}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">{faq.answer}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-purple-600 to-purple-700">
-        <div className="max-w-4xl mx-auto text-center text-white">
-          <h2 className="text-3xl font-bold mb-6">Ready to Share Your Story?</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join thousands of people connecting across generations through meaningful conversations.
-          </p>
-          <Button 
-            size="lg" 
-            variant="secondary" 
-            onClick={() => router.push('/sign-up')}
-            className="bg-white text-purple-600 hover:bg-gray-100"
-          >
-            Get Started Free
-            <ChevronRight className="ml-2 h-5 w-5" />
-          </Button>
-        </div>
-      </section>
+      <CTASection
+        title="Ready to Share Your Wisdom?"
+        description="Join thousands of storytellers making meaningful connections across generations."
+      />
     </div>
   )
 }

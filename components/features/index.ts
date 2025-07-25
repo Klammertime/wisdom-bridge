@@ -1,0 +1,6 @@
+export { FeatureHero } from './feature-hero'
+export { FeatureGrid } from './feature-grid'
+export { FAQSection } from './faq-section'
+export { TestimonialSection } from './testimonial-section'
+export { CTASection } from './cta-section'
+export { StepsSection } from './steps-section'

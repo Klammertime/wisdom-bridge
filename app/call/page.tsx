@@ -1,22 +1,31 @@
 'use client'
 
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { createVideoRoom } from '@/lib/api'
-import { Connection } from '@/lib/types'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { PhoneOff, Save, AlertCircle, Copy, Share2 } from 'lucide-react'
+import { useVideoCall } from '@/hooks/use-video-call'
+import { useConnections } from '@/hooks/use-connections'
+import { useClipboard } from '@/hooks/use-clipboard'
+import { 
+  VIDEO_CALL, 
+  SHARE_DIALOG, 
+  CALL_MESSAGES, 
+  BUTTON_LABELS 
+} from '@/lib/constants/call'
 
 function CallContent() {
   const { user, isLoaded } = useUser()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [roomUrl, setRoomUrl] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
   const matchId = searchParams.get('matchId')
+  
+  // Custom hooks
+  const { roomUrl, isLoading, error, initializeRoom } = useVideoCall()
+  const { saveConnection } = useConnections()
+  const { copied, copyToClipboard } = useClipboard()
 
   useEffect(() => {
     if (isLoaded && !user) {
@@ -24,27 +33,8 @@ function CallContent() {
     }
   }, [user, isLoaded, router])
 
-  useEffect(() => {
-    const initializeRoom = async () => {
-      if (!user) return
-
-      try {
-        setIsLoading(true)
-        const room = await createVideoRoom()
-        setRoomUrl(room.roomUrl)
-      } catch (err) {
-        console.error('Error creating room:', err)
-        setError('Failed to create video room. Please try again.')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    initializeRoom()
-  }, [user])
-
   const handleEndCall = () => {
-    if (confirm('Are you sure you want to end the call?')) {
+    if (confirm(CALL_MESSAGES.END_CALL_CONFIRM)) {
       router.push('/dashboard')
     }
   }
@@ -52,46 +42,22 @@ function CallContent() {
   const handleSaveConnection = () => {
     if (!user || !matchId) return
 
-    const newConnection: Connection = {
-      id: Date.now().toString(),
+    const success = saveConnection({
       userId: user.id,
       connectedUserId: matchId,
-      connectedUserName: 'Matched User',
-      connectedUserEmail: 'user@example.com',
+      connectedUserName: 'Matched User', // TODO: Get actual user name from match data
+      connectedUserEmail: 'user@example.com', // TODO: Get actual user email
       connectedAt: new Date(),
-    }
+    })
 
-    try {
-      const existingConnectionsData = localStorage.getItem('connections')
-      const existingConnections = existingConnectionsData ? JSON.parse(existingConnectionsData) : []
-      
-      // Check if connection already exists to prevent duplicates
-      const connectionExists = existingConnections.some(
-        (conn: Connection) => conn.connectedUserId === matchId && conn.userId === user.id
-      )
-      
-      if (!connectionExists) {
-        const updatedConnections = [...existingConnections, newConnection]
-        localStorage.setItem('connections', JSON.stringify(updatedConnections))
-      }
-    } catch (error) {
-      console.error('Failed to save connection:', error)
-      // Fallback: continue without saving to localStorage
+    if (success) {
+      router.push('/dashboard')
     }
-
-    router.push('/dashboard')
   }
 
   const handleCopyLink = async () => {
     if (!roomUrl) return
-    
-    try {
-      await navigator.clipboard.writeText(roomUrl)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
-      console.error('Failed to copy:', err)
-    }
+    await copyToClipboard(roomUrl)
   }
 
   const handleShare = async () => {
@@ -100,8 +66,8 @@ function CallContent() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Join my Bridge call',
-          text: 'Click the link to join my video call',
+          title: SHARE_DIALOG.TITLE,
+          text: SHARE_DIALOG.TEXT,
           url: roomUrl,
         })
       } catch (err) {
@@ -113,11 +79,7 @@ function CallContent() {
   }
 
   if (!isLoaded || !user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900"></div>
-      </div>
-    )
+    return <LoadingSpinner />
   }
 
   return (
@@ -125,49 +87,51 @@ function CallContent() {
       <div className="flex-1 p-2 flex flex-col">
         <div className="w-full flex-1 flex flex-col">
 
-          <div className="flex-1 bg-slate-800 rounded-lg overflow-hidden relative" style={{ minHeight: '600px' }}>
+          <div 
+            className="flex-1 bg-slate-800 rounded-lg overflow-hidden relative" 
+            style={{ minHeight: VIDEO_CALL.MIN_HEIGHT }}
+          >
             {isLoading ? (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4 mx-auto"></div>
-                  <p className="text-lg mb-2 text-white">Setting up video call...</p>
-                  <p className="text-sm text-gray-300">Please wait</p>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4 mx-auto" />
+                  <p className="text-lg mb-2 text-white">{CALL_MESSAGES.LOADING.TITLE}</p>
+                  <p className="text-sm text-gray-300">{CALL_MESSAGES.LOADING.SUBTITLE}</p>
                 </div>
               </div>
             ) : error ? (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center p-8">
                   <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-                  <p className="text-lg mb-2 text-white">Unable to start video call</p>
+                  <p className="text-lg mb-2 text-white">{CALL_MESSAGES.ERROR.TITLE}</p>
                   <p className="text-sm text-gray-300 mb-4">{error}</p>
-                  <Button onClick={() => window.location.reload()} variant="outline">
-                    Try Again
+                  <Button onClick={initializeRoom} variant="outline">
+                    {CALL_MESSAGES.ERROR.RETRY_BUTTON}
                   </Button>
                 </div>
               </div>
             ) : roomUrl ? (
               <>
-                {/* Jitsi iframe */}
                 <iframe
                   src={roomUrl}
-                  allow="camera; microphone; fullscreen; display-capture; autoplay"
+                  allow={VIDEO_CALL.IFRAME_PERMISSIONS}
                   className="absolute inset-0 w-full h-full"
-                  style={{ border: 0, minHeight: '600px' }}
+                  style={{ border: 0, minHeight: VIDEO_CALL.MIN_HEIGHT }}
                 />
                 
-                {/* Note about Jitsi */}
                 <div className="absolute top-4 right-4 bg-black/50 text-white p-2 rounded text-xs">
-                  Powered by Jitsi Meet
+                  Powered by {VIDEO_CALL.PROVIDER_NAME}
                 </div>
                 
-                {/* Exit hint */}
                 <div className="absolute top-4 left-4 bg-black/50 text-white p-2 rounded text-sm">
-                  <span className="opacity-75">Press</span> <span className="font-semibold">End Call</span> <span className="opacity-75">below to return to dashboard</span>
+                  <span className="opacity-75">{CALL_MESSAGES.EXIT_HINT.PREFIX}</span>{' '}
+                  <span className="font-semibold">{CALL_MESSAGES.EXIT_HINT.ACTION}</span>{' '}
+                  <span className="opacity-75">{CALL_MESSAGES.EXIT_HINT.SUFFIX}</span>
                 </div>
               </>
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">
-                <p className="text-white">No room URL available</p>
+                <p className="text-white">{CALL_MESSAGES.NO_ROOM}</p>
               </div>
             )}
           </div>
@@ -182,7 +146,7 @@ function CallContent() {
                 className="font-semibold"
               >
                 <PhoneOff className="h-5 w-5 mr-2" />
-                End Call
+                {BUTTON_LABELS.END_CALL}
               </Button>
             </div>
             
@@ -191,11 +155,11 @@ function CallContent() {
                 variant="outline"
                 size="sm"
                 onClick={handleCopyLink}
-                title={copied ? "Copied!" : "Copy room link"}
+                title={copied ? BUTTON_LABELS.COPIED : "Copy room link"}
                 disabled={!roomUrl}
               >
                 <Copy className="h-4 w-4 mr-1" />
-                {copied ? "Copied!" : "Copy Link"}
+                {copied ? BUTTON_LABELS.COPIED : BUTTON_LABELS.COPY_LINK}
               </Button>
 
               <Button
@@ -206,7 +170,7 @@ function CallContent() {
                 disabled={!roomUrl}
               >
                 <Share2 className="h-4 w-4 mr-1" />
-                Share
+                {BUTTON_LABELS.SHARE}
               </Button>
 
               <Button
@@ -216,7 +180,7 @@ function CallContent() {
                 title="Save this connection"
               >
                 <Save className="h-4 w-4 mr-1" />
-                Save Contact
+                {BUTTON_LABELS.SAVE_CONTACT}
               </Button>
             </div>
           </div>
@@ -228,14 +192,7 @@ function CallContent() {
 
 export default function CallPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    }>
+    <Suspense fallback={<LoadingSpinner />}>
       <CallContent />
     </Suspense>
   )

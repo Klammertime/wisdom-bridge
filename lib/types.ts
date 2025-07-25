@@ -40,3 +40,40 @@ export interface VideoRoom {
   roomName: string
   token?: string
 }
+
+// Feature page types
+export interface FeatureBenefit {
+  icon: React.ComponentType<{ className?: string }>
+  title: string
+  description: string
+}
+
+export interface FeatureStep {
+  step: number
+  title: string
+  description: string
+}
+
+export interface FeatureFAQ {
+  question: string
+  answer: string
+}
+
+export interface FeatureTestimonial {
+  name: string
+  age?: number
+  quote: string
+  role: string
+}
+
+export interface FeaturePageData {
+  title: string
+  subtitle: string
+  description: string
+  benefits: FeatureBenefit[]
+  howItWorks?: FeatureStep[]
+  faqs: FeatureFAQ[]
+  testimonials?: FeatureTestimonial[]
+  ctaText: string
+  ctaLink: string
+}

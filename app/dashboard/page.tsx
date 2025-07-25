@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { UserRole, Connection } from '@/lib/types'
 import { 
   Users, Heart, Sparkles, BookOpen, TrendingUp,
@@ -14,11 +15,54 @@ import Link from 'next/link'
 import { RecentConnections } from '@/components/recent-connections'
 import { mockConnections } from '@/lib/mock-data'
 
+// Constants
+const DAYS_IN_WEEK = 7
+
+// Helper function to get time-based greeting
+function getTimeBasedGreeting(): string {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'Good morning'
+  if (hour < 18) return 'Good afternoon'
+  return 'Good evening'
+}
+
+// Helper function to get role-specific tips
+function getTipForRole(role: UserRole): string {
+  const tips = {
+    giver: "Share specific examples from your experience. People connect better with stories than advice.",
+    receiver: "Come prepared with specific questions. The more focused you are, the better guidance you'll receive.",
+    both: "Switch between mentoring and learning to get the full experience."
+  }
+  return tips[role] || tips.both
+}
+
+// Role configuration for consistent styling
+const ROLE_CONFIG = {
+  giver: {
+    icon: Heart,
+    color: 'text-rose-500',
+    bgColor: 'bg-rose-50',
+    label: 'Mentor'
+  },
+  receiver: {
+    icon: Users,
+    color: 'text-blue-500',
+    bgColor: 'bg-blue-50',
+    label: 'Learner'
+  },
+  both: {
+    icon: Sparkles,
+    color: 'text-purple-500',
+    bgColor: 'bg-purple-50',
+    label: 'Both'
+  }
+}
+
 export default function DashboardPage() {
   const { user, isLoaded } = useUser()
   const router = useRouter()
   const [connections, setConnections] = useState<Connection[]>([])
-  const [greeting, setGreeting] = useState('')
+  const greeting = getTimeBasedGreeting()
 
   useEffect(() => {
     if (isLoaded && !user) {
@@ -29,36 +73,25 @@ export default function DashboardPage() {
       router.push('/onboarding')
     }
 
-    // Use mock data for now, in production this would come from your database
+    // TODO: Replace with actual database query when backend is implemented
+    // For now, using mock data for development
     setConnections(mockConnections)
-
-    // Set time-based greeting
-    const hour = new Date().getHours()
-    if (hour < 12) setGreeting('Good morning')
-    else if (hour < 18) setGreeting('Good afternoon')
-    else setGreeting('Good evening')
   }, [user, isLoaded, router])
 
   if (!isLoaded || !user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900"></div>
-      </div>
-    )
+    return <LoadingSpinner />
   }
 
   const userRole = user.publicMetadata.role as UserRole
-  const RoleIcon = userRole === 'giver' ? Heart : userRole === 'receiver' ? Users : Sparkles
-  const roleColor = userRole === 'giver' ? 'text-rose-500' : userRole === 'receiver' ? 'text-blue-500' : 'text-purple-500'
-  const roleBgColor = userRole === 'giver' ? 'bg-rose-50' : userRole === 'receiver' ? 'bg-blue-50' : 'bg-purple-50'
-  const roleLabel = userRole === 'giver' ? 'Mentor' : userRole === 'receiver' ? 'Learner' : 'Both'
+  const roleConfig = ROLE_CONFIG[userRole] || ROLE_CONFIG.both
+  const { icon: RoleIcon, color: roleColor, bgColor: roleBgColor, label: roleLabel } = roleConfig
 
   // Stats
   const totalConnections = connections.length
   const thisWeekConnections = connections.filter(c => {
     const date = new Date(c.connectedAt)
     const weekAgo = new Date()
-    weekAgo.setDate(weekAgo.getDate() - 7)
+    weekAgo.setDate(weekAgo.getDate() - DAYS_IN_WEEK)
     return date > weekAgo
   }).length
 
@@ -157,12 +190,7 @@ export default function DashboardPage() {
                 <div>
                   <h3 className="font-semibold text-slate-900 mb-1">Tip of the day</h3>
                   <p className="text-sm text-slate-700">
-                    {userRole === 'giver' 
-                      ? "Share specific examples from your experience. People connect better with stories than advice."
-                      : userRole === 'receiver'
-                      ? "Come prepared with specific questions. The more focused you are, the better guidance you'll receive."
-                      : "Switch between mentoring and learning to get the full experience."
-                    }
+                    {getTipForRole(userRole)}
                   </p>
                 </div>
               </div>

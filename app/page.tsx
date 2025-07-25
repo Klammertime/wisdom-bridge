@@ -3,6 +3,80 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 import { Heart, Users, Video, ArrowRight, Sparkles, Shield, Clock } from 'lucide-react'
+import { FeatureCard, UseCaseCard, TrustIndicator } from '@/components/home'
+
+// Data configuration
+const features = [
+  {
+    href: '/features/share-your-story',
+    icon: Heart,
+    title: 'Share Your Story',
+    description: "Whether you're 25 or 85, your experiences matter. Share your stories with someone who genuinely wants to listen and learn.",
+    colorScheme: 'rose' as const
+  },
+  {
+    href: '/features/find-connection',
+    icon: Users,
+    title: 'Find Connection',
+    description: 'Missing those grandparent-style conversations? Connect with someone who has time to share and stories to tell.',
+    colorScheme: 'blue' as const
+  },
+  {
+    href: '/features/real-people',
+    icon: Video,
+    title: 'Real People',
+    description: 'Video calls with real people who want to connect. No age limits, no requirements - just genuine human conversation.',
+    colorScheme: 'green' as const
+  }
+]
+
+const useCases = [
+  {
+    title: 'Journalists & Witnesses',
+    description: 'Working on a WWII story? Connect with veterans or their families who lived through history.'
+  },
+  {
+    title: 'Detectives & Investigators',
+    description: 'Retired law enforcement sharing expertise with citizen investigators and true crime researchers.'
+  },
+  {
+    title: 'Students & Experts',
+    description: 'Thesis research? Find someone who worked in your field of study for decades.'
+  },
+  {
+    title: 'Families & Elders',
+    description: 'Missing grandparent chats? Connect with someone who has stories to share and time to talk.'
+  },
+  {
+    title: 'Hobbyists & Masters',
+    description: "Learning woodworking? Talk to someone who's been crafting for 40 years."
+  },
+  {
+    title: 'Anyone & Everyone',
+    description: 'Sometimes you just need someone to talk to. We all have stories worth sharing.'
+  }
+]
+
+const trustIndicators = [
+  {
+    icon: Shield,
+    title: 'Safe & Secure',
+    description: 'All conversations are private. Your data is protected with enterprise-grade security.',
+    colorScheme: 'blue' as const
+  },
+  {
+    icon: Users,
+    title: 'Combat Loneliness',
+    description: 'Many people have stories to share but no one to share them with. Be that person for someone.',
+    colorScheme: 'green' as const
+  },
+  {
+    icon: Clock,
+    title: 'No Barriers',
+    description: 'No age requirements, no location limits. Connect from anywhere, anytime, with anyone.',
+    colorScheme: 'purple' as const
+  }
+]
 
 export default function HomePage() {
   return (
@@ -27,50 +101,9 @@ export default function HomePage() {
           <div className="max-w-5xl mx-auto">
             {/* Feature Cards */}
             <div className="grid md:grid-cols-3 gap-8 mb-16">
-              <Link href="/features/share-your-story" className="block">
-                <Card className="group hover:shadow-lg transition-all duration-300 border-slate-200 cursor-pointer h-full">
-                  <CardHeader>
-                    <div className="w-14 h-14 bg-rose-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-rose-200 transition-colors">
-                      <Heart className="w-7 h-7 text-rose-600" />
-                    </div>
-                    <CardTitle className="text-xl">Share Your Story</CardTitle>
-                    <CardDescription className="text-base mt-2">
-                      Whether you're 25 or 85, your experiences matter. Share your stories
-                      with someone who genuinely wants to listen and learn.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-
-              <Link href="/features/find-connection" className="block">
-                <Card className="group hover:shadow-lg transition-all duration-300 border-slate-200 cursor-pointer h-full">
-                  <CardHeader>
-                    <div className="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
-                      <Users className="w-7 h-7 text-blue-600" />
-                    </div>
-                    <CardTitle className="text-xl">Find Connection</CardTitle>
-                    <CardDescription className="text-base mt-2">
-                      Missing those grandparent-style conversations? Connect with someone
-                      who has time to share and stories to tell.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-
-              <Link href="/features/real-people" className="block">
-                <Card className="group hover:shadow-lg transition-all duration-300 border-slate-200 cursor-pointer h-full">
-                  <CardHeader>
-                    <div className="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
-                      <Video className="w-7 h-7 text-green-600" />
-                    </div>
-                    <CardTitle className="text-xl">Real People</CardTitle>
-                    <CardDescription className="text-base mt-2">
-                      Video calls with real people who want to connect. No age limits,
-                      no requirements - just genuine human conversation.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
+              {features.map((feature) => (
+                <FeatureCard key={feature.href} {...feature} />
+              ))}
             </div>
 
             {/* CTA Buttons */}
@@ -128,47 +161,9 @@ export default function HomePage() {
             </p>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                <h4 className="font-semibold text-slate-800 mb-2">Journalists & Witnesses</h4>
-                <p className="text-sm text-slate-600">
-                  Working on a WWII story? Connect with veterans or their families who lived through history.
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                <h4 className="font-semibold text-slate-800 mb-2">Detectives & Investigators</h4>
-                <p className="text-sm text-slate-600">
-                  Retired law enforcement sharing expertise with citizen investigators and true crime researchers.
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                <h4 className="font-semibold text-slate-800 mb-2">Students & Experts</h4>
-                <p className="text-sm text-slate-600">
-                  Thesis research? Find someone who worked in your field of study for decades.
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                <h4 className="font-semibold text-slate-800 mb-2">Families & Elders</h4>
-                <p className="text-sm text-slate-600">
-                  Missing grandparent chats? Connect with someone who has stories to share and time to talk.
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                <h4 className="font-semibold text-slate-800 mb-2">Hobbyists & Masters</h4>
-                <p className="text-sm text-slate-600">
-                  Learning woodworking? Talk to someone who's been crafting for 40 years.
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                <h4 className="font-semibold text-slate-800 mb-2">Anyone & Everyone</h4>
-                <p className="text-sm text-slate-600">
-                  Sometimes you just need someone to talk to. We all have stories worth sharing.
-                </p>
-              </div>
+              {useCases.map((useCase, index) => (
+                <UseCaseCard key={index} {...useCase} />
+              ))}
             </div>
           </div>
         </div>
@@ -180,33 +175,9 @@ export default function HomePage() {
               How It Works
             </h3>
             <div className="grid md:grid-cols-3 gap-8 text-center">
-              <div>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-6 h-6 text-blue-600" />
-                </div>
-                <h4 className="font-semibold text-slate-800 mb-2">Safe & Secure</h4>
-                <p className="text-sm text-slate-600">
-                  All conversations are private. Your data is protected with enterprise-grade security.
-                </p>
-              </div>
-              <div>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-6 h-6 text-green-600" />
-                </div>
-                <h4 className="font-semibold text-slate-800 mb-2">Combat Loneliness</h4>
-                <p className="text-sm text-slate-600">
-                  Many people have stories to share but no one to share them with. Be that person for someone.
-                </p>
-              </div>
-              <div>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Clock className="w-6 h-6 text-purple-600" />
-                </div>
-                <h4 className="font-semibold text-slate-800 mb-2">No Barriers</h4>
-                <p className="text-sm text-slate-600">
-                  No age requirements, no location limits. Connect from anywhere, anytime, with anyone.
-                </p>
-              </div>
+              {trustIndicators.map((indicator, index) => (
+                <TrustIndicator key={index} {...indicator} />
+              ))}
             </div>
           </div>
         </div>
